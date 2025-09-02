@@ -1,73 +1,81 @@
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-require("dotenv").config();
+// Load environment variables first
+require('dotenv').config();
 
-const authRoutes = require("./routes/auth");
-const pollRoutes = require("./routes/polls");
-const userRoutes = require("./routes/users");
+const express = require('express');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Security middleware
-app.use(helmet());
+// Basic middleware
+app.use(cors());
+app.use(express.json());
 
-// CORS configuration
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || "http://localhost:3000",
-  credentials: true
-}));
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
-  message: "Too many requests from this IP, please try again later."
-});
-app.use(limiter);
-
-// Body parsing middleware
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-
-// Health check endpoint
-app.get("/health", (req, res) => {
-  res.status(200).json({ 
-    status: "OK", 
-    message: "Votiy API is running",
-    timestamp: new Date().toISOString()
+// Simple health check
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'Hello World from Votiy API!',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
-// API routes
-app.use("/api/auth", authRoutes);
-app.use("/api/polls", pollRoutes);
-app.use("/api/users", userRoutes);
+// Test Supabase connection endpoint
+app.get('/debug/supabase', async (req, res) => {
+  try {
+    const { createSupabaseClient } = require('./config/supabase');
+    const supabase = createSupabaseClient();
+
+    // Test a simple query
+    const { data, error } = await supabase
+      .from('users')
+      .select('count')
+      .limit(1);
+
+    if (error) {
+      res.json({
+        status: 'error',
+        message: 'Supabase query failed',
+        error: error.message
+      });
+    } else {
+      res.json({
+        status: 'success',
+        message: 'Supabase connection working',
+        data: data
+      });
+    }
+  } catch (err) {
+    res.json({
+      status: 'error',
+      message: 'Failed to create Supabase client',
+      error: err.message
+    });
+  }
+});
+
+// API Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/polls', require('./routes/polls'));
+app.use('/api/poll-options', require('./routes/poll-options'));
+app.use('/api/poll-votes', require('./routes/poll-votes'));
 
 // 404 handler
-app.use("*", (req, res) => {
-  res.status(404).json({ 
-    error: "Route not found",
-    message: `The route ${req.originalUrl} does not exist on this server`
-  });
-});
-
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error("Global error handler:", err);
-  res.status(err.status || 500).json({
-    error: err.message || "Internal server error",
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack })
-  });
+app.use('*', (req, res) => {
+  res.status(404).json({ error: 'Route not found' });
 });
 
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Votiy API server running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log(`🔗 API base URL: http://localhost:${PORT}/api`);
+  console.log(`🔌 Supabase test: http://localhost:${PORT}/debug/supabase`);
+  console.log(`🔐 Auth API: http://localhost:${PORT}/api/auth`);
+  console.log(`👥 Users API: http://localhost:${PORT}/api/users`);
+  console.log(`🗳️ Polls API: http://localhost:${PORT}/api/polls`);
+  console.log(`📝 Poll Options API: http://localhost:${PORT}/api/poll-options`);
+  console.log(`🗳️ Poll Votes API: http://localhost:${PORT}/api/poll-votes`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
-
-module.exports = app;
