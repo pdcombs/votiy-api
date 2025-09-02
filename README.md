@@ -5,11 +5,13 @@ A robust REST API for the Votiy event voting platform, built with Node.js, Expre
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 - Supabase account and project
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone https://github.com/pdcombs/votiy-api.git
@@ -38,11 +40,14 @@ The API will be available at `http://localhost:3001`
 The API uses JWT (JSON Web Tokens) for authentication. Most endpoints require a valid JWT token in the Authorization header.
 
 ### Getting a Token
+
 1. **Sign Up**: `POST /api/auth/signup`
 2. **Sign In**: `POST /api/auth/signin`
 
 ### Using the Token
+
 Include the token in your request headers:
+
 ```
 Authorization: Bearer YOUR_JWT_TOKEN_HERE
 ```
@@ -50,12 +55,14 @@ Authorization: Bearer YOUR_JWT_TOKEN_HERE
 ## 📚 API Endpoints
 
 ### Health Check
+
 - **GET** `/health` - Server health status
 - **GET** `/debug/supabase` - Test Supabase connection
 
 ### Authentication (`/api/auth`)
 
 #### Sign Up
+
 ```http
 POST /api/auth/signup
 Content-Type: application/json
@@ -70,6 +77,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -89,6 +97,7 @@ Content-Type: application/json
 ```
 
 #### Sign In
+
 ```http
 POST /api/auth/signin
 Content-Type: application/json
@@ -100,6 +109,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -117,18 +127,21 @@ Content-Type: application/json
 ```
 
 #### Get Profile
+
 ```http
 GET /api/auth/profile
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 #### Sign Out
+
 ```http
 POST /api/auth/signout
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 #### Change Password
+
 ```http
 POST /api/auth/change-password
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -143,18 +156,21 @@ Content-Type: application/json
 ### Users (`/api/users`)
 
 #### Get All Users
+
 ```http
 GET /api/users
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 #### Get User by ID
+
 ```http
 GET /api/users/:id
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 #### Create User
+
 ```http
 POST /api/users
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -169,6 +185,7 @@ Content-Type: application/json
 ```
 
 #### Update User
+
 ```http
 PUT /api/users/:id
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -181,6 +198,7 @@ Content-Type: application/json
 ```
 
 #### Delete User
+
 ```http
 DELETE /api/users/:id
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -189,18 +207,21 @@ Authorization: Bearer YOUR_JWT_TOKEN
 ### Polls (`/api/polls`)
 
 #### Get All Polls
+
 ```http
 GET /api/polls
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 #### Get Poll by ID
+
 ```http
 GET /api/polls/:id
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 #### Create Poll
+
 ```http
 POST /api/polls
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -216,6 +237,7 @@ Content-Type: application/json
 ```
 
 #### Update Poll
+
 ```http
 PUT /api/polls/:id
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -228,6 +250,7 @@ Content-Type: application/json
 ```
 
 #### Delete Poll
+
 ```http
 DELETE /api/polls/:id
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -236,18 +259,21 @@ Authorization: Bearer YOUR_JWT_TOKEN
 ### Poll Options (`/api/poll-options`)
 
 #### Get All Poll Options
+
 ```http
 GET /api/poll-options
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 #### Get Poll Options by Poll ID
+
 ```http
 GET /api/poll-options?poll_id=:poll_id
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 #### Create Poll Option
+
 ```http
 POST /api/poll-options
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -261,6 +287,7 @@ Content-Type: application/json
 ```
 
 #### Update Poll Option
+
 ```http
 PUT /api/poll-options/:id
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -272,6 +299,7 @@ Content-Type: application/json
 ```
 
 #### Delete Poll Option
+
 ```http
 DELETE /api/poll-options/:id
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -280,18 +308,21 @@ Authorization: Bearer YOUR_JWT_TOKEN
 ### Poll Votes (`/api/poll-votes`)
 
 #### Get All Votes
+
 ```http
 GET /api/poll-votes
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 #### Get Votes by Poll ID
+
 ```http
 GET /api/poll-votes?poll_id=:poll_id
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 #### Cast a Vote
+
 ```http
 POST /api/poll-votes
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -304,6 +335,7 @@ Content-Type: application/json
 ```
 
 #### Update Vote
+
 ```http
 PUT /api/poll-votes/:id
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -315,6 +347,7 @@ Content-Type: application/json
 ```
 
 #### Delete Vote
+
 ```http
 DELETE /api/poll-votes/:id
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -323,23 +356,29 @@ Authorization: Bearer YOUR_JWT_TOKEN
 ## 🧪 Testing with Postman
 
 ### 1. Set Up Environment Variables
+
 Create a new environment in Postman and add these variables:
+
 - `base_url`: `http://localhost:3001`
 - `auth_token`: (leave empty, will be set after login)
 
 ### 2. Authentication Flow
+
 1. **Sign Up**: `POST {{base_url}}/api/auth/signup`
 2. **Sign In**: `POST {{base_url}}/api/auth/signin`
 3. **Copy Token**: From the response, copy the `token` value
 4. **Set Token**: In your environment, set `auth_token` to the copied token
 
 ### 3. Test Protected Endpoints
+
 Use `{{auth_token}}` in the Authorization header:
+
 ```
 Authorization: Bearer {{auth_token}}
 ```
 
 ### 4. Postman Collection
+
 Import this collection structure:
 
 ```json
@@ -402,6 +441,7 @@ Import this collection structure:
 ## 🗄️ Database Schema
 
 ### Users Table
+
 ```sql
 CREATE TABLE public.users (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -416,6 +456,7 @@ CREATE TABLE public.users (
 ```
 
 ### Polls Table
+
 ```sql
 CREATE TABLE public.polls (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -431,6 +472,7 @@ CREATE TABLE public.polls (
 ```
 
 ### Poll Sections Table
+
 ```sql
 CREATE TABLE public.poll_sections (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -443,6 +485,7 @@ CREATE TABLE public.poll_sections (
 ```
 
 ### Poll Options Table
+
 ```sql
 CREATE TABLE public.poll_options (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -455,6 +498,7 @@ CREATE TABLE public.poll_options (
 ```
 
 ### Poll Votes Table
+
 ```sql
 CREATE TABLE public.poll_votes (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -470,6 +514,7 @@ CREATE TABLE public.poll_votes (
 ## 🔧 Configuration
 
 ### Environment Variables
+
 ```bash
 # Server
 PORT=3001
@@ -494,6 +539,7 @@ RATE_LIMIT_MAX_REQUESTS=100
 ## 🚀 Deployment
 
 ### Production
+
 ```bash
 # Set NODE_ENV to production
 export NODE_ENV=production
@@ -503,6 +549,7 @@ npm start
 ```
 
 ### Docker (Optional)
+
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
@@ -526,6 +573,7 @@ The API returns consistent error responses:
 ```
 
 ### Common HTTP Status Codes
+
 - `200` - Success
 - `201` - Created
 - `400` - Bad Request
